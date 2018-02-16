@@ -1,47 +1,119 @@
 $(document).ready(function () {
 
-    //Question Bank
+    //Question Bank add as many questions as you want
     var QuizQuestions = {
         Trivia: [{
-            question: "Question1 Goes Here",
-            answer: "Answer1 Goes Here",
-            decoys: ["Decoy1 Goes Here", "Decoy1 Goes Here", "Decoy1 Goes Here"]
-        },{
-            question: "Question2 Goes Here",
-            answer: "Answer 2 Goes Here",
-            decoys: ["Decoy2 Goes Here", "Decoy2 Goes Here", "Decoy2 Goes Here"]
-        },{
-            question: "Question3 Goes Here",
-            answer: "Answer 3 Goes Here",
-            decoys: ["Decoy3 Goes Here", "Decoy2 Goes Here", "Decoy2 Goes Here"]
-        },{
-            question: "Question4 Goes Here",
-            answer: "Answer 4 Goes Here",
-            decoys: ["Decoy4 Goes Here", "Decoy2 Goes Here", "Decoy2 Goes Here"]
-        },{
-            question: "Question5 Goes Here",
-            answer: "Answer 5 Goes Here",
-            decoys: ["Decoy5 Goes Here", "Decoy2 Goes Here", "Decoy5 Goes Here"]
+            question: "Question 1: What country's current capital city is an anagram of its former capital city?",
+            answer: "Japan",
+            decoys: ["New Zeland", "Italy", "The United States of America"]
+        }, {
+            question: 'Question 2: In the movie "The Wizard of Oz", what did the Scarecrow want from the wizard?',
+            answer: "A brain",
+            decoys: ["More straw", "A pet crow", "Cool sunglasses"]
+        }, {
+            question: "Question 3: What do the letters HTML, a markup language used to create web pages, stand for?",
+            answer: "HyperText Markup Language",
+            decoys: ["How To Make Love", "	High Temperature Materials Laboratory", "Hot Metal"]
+        }, {
+            question: "Question ?: Which Question is this?",
+            answer: "4",
+            decoys: ["3", "5", "6"]
+        }, {
+            question: "Question 5: How many moons does the planet Venus have?",
+            answer: "Zero",
+            decoys: ["One", "Two", "Five"]
         }
         ]
     }
+    $("#Question").html("Welcome to my Trivia Game! There are a total of " + QuizQuestions.Trivia.length + " questions, can you solve them all?" + "<br>" + "<button id ='nextquestion'>Click to start Quiz!</button>");
+    var number = 30;
+    var countdown;
+    var correct = 0;
+    var wrong = 0;
+    var timeout = 0;
 
     var QuestionNumber = 0;
 
-    function makeTrivia() {
-        console.log(QuizQuestions);
-        $("#QuestionNumber").text("#"+(QuestionNumber + 1));
+    function makeTrivia(mixedAnswers) {
         $("#Question").text(QuizQuestions.Trivia[QuestionNumber].question);
-        $("#Answer1").text(QuizQuestions.Trivia[QuestionNumber].answer);
-        $("#Answer2").text(QuizQuestions.Trivia[QuestionNumber].decoys[0]);
-        $("#Answer3").text(QuizQuestions.Trivia[QuestionNumber].decoys[1]);
-        $("#Answer4").text(QuizQuestions.Trivia[QuestionNumber].decoys[2]);
-        console.log(QuizQuestions.Trivia[QuestionNumber].question);
-        console.log(QuestionNumber);
+        $("#Answer1").html('<button class ="answer" data-name="' + mixedAnswers[0] + '">' + mixedAnswers[0] + '</button>');
+        $("#Answer2").html('<button class ="answer" data-name="' + mixedAnswers[1] + '">' + mixedAnswers[1] + '</button>');
+        $("#Answer3").html('<button class ="answer" data-name="' + mixedAnswers[2] + '">' + mixedAnswers[2] + '</button>');
+        $("#Answer4").html('<button class ="answer" data-name="' + mixedAnswers[3] + '">' + mixedAnswers[3] + '</button>');
+        timer();
     }
 
-    $(document).on("click", function () {
-        makeTrivia();
+    function correctScreen() {
+        $("#Question").html("Hurray! You're Correct!" + "<br>" + "<button id ='nextquestion'>Click to continue!</button>");
+        $(".ans").empty();
         QuestionNumber++;
+    }
+    function wrongScreen() {
+        $("#Question").html("Oh No! You're Wrong!" + "<br>" + "The correct answer was:<br>" + QuizQuestions.Trivia[QuestionNumber].answer + "<br>" + "<button id ='nextquestion'>Click to continue!</button>");
+        $(".ans").empty();
+        QuestionNumber++;
+    }
+    function endScreen() {
+        var winnings = $("<div>You got " + correct + " questions right!</div>");
+        var incorrect = $("<div>You got " + wrong + " questions wrong!</div>");
+        var timedout = $("<div>You didn't answer " + timeout + " questions!</div>");
+        $("#Question").html("You're done!");
+        $("#Question").append(winnings, incorrect, timedout);
+        $(".ans").empty();
+    }
+
+    function timer() {
+        number = 10;
+        countdown = setInterval(decrement, 1000);
+    }
+    function stop() {
+        clearInterval(countdown);
+    }
+
+    function decrement() {
+
+        number--;
+
+        $("#Timer").html("<h2>" + number + "</h2>");
+
+        if (number === 0) {
+
+            stop();
+            timeout++;
+            wrongScreen();
+        }
+    }
+
+    //function randomize answer and decoy positions
+    function mixup() {
+        var mixedAnswers = [QuizQuestions.Trivia[QuestionNumber].answer, QuizQuestions.Trivia[QuestionNumber].decoys[0], QuizQuestions.Trivia[QuestionNumber].decoys[1], QuizQuestions.Trivia[QuestionNumber].decoys[2]]
+        for (var i = 0; i < mixedAnswers.length - 1; i++) {
+            var j = Math.floor(Math.random() * (mixedAnswers.length - i));
+            var temp = mixedAnswers[j];
+            mixedAnswers[j] = mixedAnswers[i];
+            mixedAnswers[i] = temp;
+        }
+        makeTrivia(mixedAnswers);
+
+    }
+    $(document).on("click", "#nextquestion", function () {
+        if (QuestionNumber === QuizQuestions.Trivia.length) {
+            endScreen();
+        }
+        else {
+            mixup();
+        }
     });
+    $(document).on("click", ".answer", function () {
+        if ($(this).data().name === QuizQuestions.Trivia[QuestionNumber].answer) {
+            stop();
+            correct++;
+            correctScreen();
+        }
+        else {
+            stop();
+            wrong++;
+            wrongScreen();
+        }
+    })
 });

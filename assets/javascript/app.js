@@ -57,13 +57,13 @@ $(document).ready(function () {
         var winnings = $("<div>You got " + correct + " questions right!</div>");
         var incorrect = $("<div>You got " + wrong + " questions wrong!</div>");
         var timedout = $("<div>You didn't answer " + timeout + " questions!</div>");
-        $("#Question").html("You're done!");
+        $("#Question").html("You've finished the quiz!");
         $("#Question").append(winnings, incorrect, timedout);
         $(".ans").empty();
     }
 
     function timer() {
-        number = 10;
+        number = 15;
         countdown = setInterval(decrement, 1000);
     }
     function stop() {

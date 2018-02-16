@@ -1,0 +1,11 @@
+.container{
+    font-size: 20px;
+}
+#Question{
+    text-align: center;
+    background-color: green;
+}
+.ans{
+    text-align: center;
+    background-color: yellow;
+}

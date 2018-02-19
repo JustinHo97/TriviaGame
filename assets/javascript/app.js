@@ -26,7 +26,7 @@ $(document).ready(function () {
         ]
     }
     $("#Question").html("Welcome to my Trivia Game! There are a total of " + QuizQuestions.Trivia.length + " questions, can you solve them all?" + "<br>" + "<button id ='nextquestion'>Click to start Quiz!</button>");
-    var number = 30;
+    var number;
     var countdown;
     var correct = 0;
     var wrong = 0;
@@ -105,7 +105,9 @@ $(document).ready(function () {
         }
     });
     $(document).on("click", ".answer", function () {
-        if ($(this).data().name === QuizQuestions.Trivia[QuestionNumber].answer) {
+        console.log($(this).data().name);
+        console.log(QuizQuestions.Trivia[QuestionNumber].answer)
+        if ($(this).data().name == QuizQuestions.Trivia[QuestionNumber].answer) {
             stop();
             correct++;
             correctScreen();
